@@ -56,16 +56,16 @@ proc create_mipi_pipe { index loc_dict } {
   create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:mipi_phy_rtl:1.0 mipi_phy_if
   
   # Add and configure the MIPI Subsystem IP
-  set clk_pin [dict get $loc_dict clk_p pin]
-  set clk_pin_name [dict get $loc_dict clk_p pin_name]
-  set data0_pin [dict get $loc_dict data0_p pin]
-  set data0_pin_name [dict get $loc_dict data0_p pin_name]
-  set data1_pin [dict get $loc_dict data1_p pin]
-  set data1_pin_name [dict get $loc_dict data1_p pin_name]
-  set data2_pin [dict get $loc_dict data2_p pin]
-  set data2_pin_name [dict get $loc_dict data2_p pin_name]
-  set data3_pin [dict get $loc_dict data3_p pin]
-  set data3_pin_name [dict get $loc_dict data3_p pin_name]
+  set clk_pin [dict get $loc_dict clk pin]
+  set clk_pin_name [dict get $loc_dict clk pin_name]
+  set data0_pin [dict get $loc_dict data0 pin]
+  set data0_pin_name [dict get $loc_dict data0 pin_name]
+  set data1_pin [dict get $loc_dict data1 pin]
+  set data1_pin_name [dict get $loc_dict data1 pin_name]
+  set data2_pin [dict get $loc_dict data2 pin]
+  set data2_pin_name [dict get $loc_dict data2 pin_name]
+  set data3_pin [dict get $loc_dict data3 pin]
+  set data3_pin_name [dict get $loc_dict data3 pin_name]
   set bank [dict get $loc_dict bank]
   set mipi_csi2_rx_subsyst [ create_bd_cell -type ip -vlnv xilinx.com:ip:mipi_csi2_rx_subsystem:5.1 mipi_csi2_rx_subsyst_0 ]
   set_property -dict [ list \
@@ -92,7 +92,7 @@ proc create_mipi_pipe { index loc_dict } {
    CONFIG.SupportLevel {1} \
   ] $mipi_csi2_rx_subsyst
  
- # THE BELOW SETTINGS ARE FOR VERIFICATION WITH DIGILENT PCAM
+ # THE BELOW SETTINGS ARE FOR VERIFICATION WITH DIGILENT PCAM ON THE PYNQ-ZU
  #
  # set mipi_csi2_rx_subsyst [create_bd_cell -type ip -vlnv xilinx.com:ip:mipi_csi2_rx_subsystem:5.1 mipi_csi2_rx_subsyst_0]
  # set_property -dict [ list \
@@ -106,7 +106,7 @@ proc create_mipi_pipe { index loc_dict } {
  #  CONFIG.DPY_LINE_RATE {280} \
  # ] $mipi_csi2_rx_subsyst
  # 
- # THE ABOVE SETTINGS ARE FOR VERIFICATION WITH DIGILENT PCAM
+ # THE ABOVE SETTINGS ARE FOR VERIFICATION WITH DIGILENT PCAM ON THE PYNQ-ZU
   
   # Add and configure the AXI Interconnect
   set axi_int_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_int_0 ]
@@ -271,14 +271,14 @@ connect_bd_net [get_bd_pins xlconcat_0/dout] [get_bd_pins axi_intc_0/intr]
 connect_bd_net [get_bd_pins axi_intc_0/irq] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq0]
 connect_bd_net [get_bd_pins rst_ps_axi_100M/peripheral_aresetn] [get_bd_pins axi_intc_0/s_axi_aresetn]
 
-# THE BELOW CONSTANT IS FOR VERIFICATION WITH DIGILENT PCAM
+# THE BELOW CONSTANT IS FOR VERIFICATION WITH DIGILENT PCAM ON THE PYNQ-ZU
 #
 # # Add constant to enable the camera
 # create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 cam_enable_0
 # create_bd_port -dir O cam_enable
 # connect_bd_net [get_bd_ports cam_enable] [get_bd_pins cam_enable_0/dout]
 #
-# THE ABOVE CONSTANT IS FOR VERIFICATION WITH DIGILENT PCAM
+# THE ABOVE CONSTANT IS FOR VERIFICATION WITH DIGILENT PCAM ON THE PYNQ-ZU
 
 # Add AXI Interconnect for the AXI Lite interfaces
 set n_periphs 1

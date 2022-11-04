@@ -76,117 +76,6 @@ set board_part [lindex [dict get $target_dict $target] 1]
 set num_cams [lindex [dict get $target_dict $target] 2]
 set bd_script [lindex [dict get $target_dict $target] 3]
 
-# MIPI pin LOC constraints are specified in the configuration of the MIPI subsystem IPs.
-# We store this information for each target in a dictionary for use by the script that builds the block diagram.
-dict set mipi_loc_dict zcu104 0 bank 67
-dict set mipi_loc_dict zcu104 0 clk_p { pin H18 pin_name IO_L16P_T2U_N6_QBC_AD3P_67 }
-dict set mipi_loc_dict zcu104 0 data0_p { pin L17 pin_name IO_L24P_T3U_N10_67 }
-dict set mipi_loc_dict zcu104 0 data1_p { pin K17 pin_name IO_L21P_T3L_N4_AD8P_67 }
-dict set mipi_loc_dict zcu104 0 data2_p { pin J16 pin_name IO_L20P_T3L_N2_AD1P_67 }
-dict set mipi_loc_dict zcu104 0 data3_p { pin E18 pin_name IO_L9P_T1L_N4_AD12P_67 }
-dict set mipi_loc_dict zcu104 1 bank 68
-dict set mipi_loc_dict zcu104 1 clk_p { pin D11 pin_name IO_L16P_T2U_N6_QBC_AD3P_68 }
-dict set mipi_loc_dict zcu104 1 data0_p { pin F11 pin_name IO_L14P_T2L_N2_GC_68 }
-dict set mipi_loc_dict zcu104 1 data1_p { pin H13 pin_name IO_L15P_T2L_N4_AD11P_68 }
-dict set mipi_loc_dict zcu104 1 data2_p { pin B11 pin_name IO_L24P_T3U_N10_68 }
-dict set mipi_loc_dict zcu104 1 data3_p { pin B6 pin_name IO_L21P_T3L_N4_AD8P_68 }
-dict set mipi_loc_dict zcu102_hpc0 0 bank 66
-dict set mipi_loc_dict zcu102_hpc0 0 clk_p { pin AB4 pin_name IO_L16P_T2U_N6_QBC_AD3P_66 }
-dict set mipi_loc_dict zcu102_hpc0 0 data0_p { pin AA2 pin_name IO_L21P_T3L_N4_AD8P_66 }
-dict set mipi_loc_dict zcu102_hpc0 0 data1_p { pin AB3 pin_name IO_L20P_T3L_N2_AD1P_66 }
-dict set mipi_loc_dict zcu102_hpc0 0 data2_p { pin U5 pin_name IO_L18P_T2U_N10_AD2P_66 }
-dict set mipi_loc_dict zcu102_hpc0 0 data3_p { pin V4 pin_name IO_L17P_T2U_N8_AD10P_66 }
-dict set mipi_loc_dict zcu102_hpc0 1 bank 67
-dict set mipi_loc_dict zcu102_hpc0 1 clk_p { pin N9 pin_name IO_L16P_T2U_N6_QBC_AD3P_67 }
-dict set mipi_loc_dict zcu102_hpc0 1 data0_p { pin P11 pin_name IO_L13P_T2L_N0_GC_QBC_67 }
-dict set mipi_loc_dict zcu102_hpc0 1 data1_p { pin M15 pin_name IO_L20P_T3L_N2_AD1P_67 }
-dict set mipi_loc_dict zcu102_hpc0 1 data2_p { pin L16 pin_name IO_L19P_T3L_N0_DBC_AD9P_67 }
-dict set mipi_loc_dict zcu102_hpc0 1 data3_p { pin L12 pin_name IO_L18P_T2U_N10_AD2P_67 }
-dict set mipi_loc_dict zcu102_hpc1 0 bank 65
-dict set mipi_loc_dict zcu102_hpc1 0 clk_p { pin AJ6 pin_name IO_L16P_T2U_N6_QBC_AD3P_65 }
-dict set mipi_loc_dict zcu102_hpc1 0 data0_p { pin AF2 pin_name IO_L21P_T3L_N4_AD8P_65 }
-dict set mipi_loc_dict zcu102_hpc1 0 data1_p { pin AG3 pin_name IO_L20P_T3L_N2_AD1P_65 }
-dict set mipi_loc_dict zcu102_hpc1 0 data2_p { pin AD4 pin_name IO_L18P_T2U_N10_AD2P_65 }
-dict set mipi_loc_dict zcu102_hpc1 0 data3_p { pin AE3 pin_name IO_L17P_T2U_N8_AD10P_65 }
-dict set mipi_loc_dict zcu106_hpc0 0 bank 67
-dict set mipi_loc_dict zcu106_hpc0 0 clk_p { pin H18 pin_name IO_L16P_T2U_N6_QBC_AD3P_67 }
-dict set mipi_loc_dict zcu106_hpc0 0 data0_p { pin L17 pin_name IO_L24P_T3U_N10_67 }
-dict set mipi_loc_dict zcu106_hpc0 0 data1_p { pin K17 pin_name IO_L21P_T3L_N4_AD8P_67 }
-dict set mipi_loc_dict zcu106_hpc0 0 data2_p { pin J16 pin_name IO_L20P_T3L_N2_AD1P_67 }
-dict set mipi_loc_dict zcu106_hpc0 0 data3_p { pin E18 pin_name IO_L9P_T1L_N4_AD12P_67 }
-dict set mipi_loc_dict zcu106_hpc0 1 bank 68
-dict set mipi_loc_dict zcu106_hpc0 1 clk_p { pin D11 pin_name IO_L16P_T2U_N6_QBC_AD3P_68 }
-dict set mipi_loc_dict zcu106_hpc0 1 data0_p { pin F11 pin_name IO_L14P_T2L_N2_GC_68 }
-dict set mipi_loc_dict zcu106_hpc0 1 data1_p { pin H13 pin_name IO_L15P_T2L_N4_AD11P_68 }
-dict set mipi_loc_dict zcu106_hpc0 1 data2_p { pin B11 pin_name IO_L24P_T3U_N10_68 }
-dict set mipi_loc_dict zcu106_hpc0 1 data3_p { pin B6 pin_name IO_L21P_T3L_N4_AD8P_68 }
-dict set mipi_loc_dict zcu106_hpc1 0 bank 28
-dict set mipi_loc_dict zcu106_hpc1 0 clk_p { pin E24 pin_name IO_L16P_T2U_N6_QBC_AD3P_28 }
-dict set mipi_loc_dict zcu106_hpc1 0 data0_p { pin J24 pin_name IO_L6P_T0U_N10_AD6P_28 }
-dict set mipi_loc_dict zcu106_hpc1 0 data1_p { pin G25 pin_name IO_L18P_T2U_N10_AD2P_28 }
-dict set mipi_loc_dict zcu106_hpc1 0 data2_p { pin D22 pin_name IO_L17P_T2U_N8_AD10P_28 }
-dict set mipi_loc_dict zcu106_hpc1 0 data3_p { pin J25 pin_name IO_L5P_T0U_N8_AD14P_28 }
-dict set mipi_loc_dict uzev 0 bank 64
-dict set mipi_loc_dict uzev 0 clk_p { pin AG13 pin_name IO_L7P_T1L_N0_QBC_AD13P_64 }
-dict set mipi_loc_dict uzev 0 data0_p { pin AH17 pin_name IO_L21P_T3L_N4_AD8P_64 }
-dict set mipi_loc_dict uzev 0 data1_p { pin AD19 pin_name IO_L18P_T2U_N10_AD2P_64 }
-dict set mipi_loc_dict uzev 0 data2_p { pin AA16 pin_name IO_L16P_T2U_N6_QBC_AD3P_64 }
-dict set mipi_loc_dict uzev 0 data3_p { pin AJ16 pin_name IO_L20P_T3L_N2_AD1P_64 }
-dict set mipi_loc_dict uzev 1 bank 65
-dict set mipi_loc_dict uzev 1 clk_p { pin AH6 pin_name IO_L13P_T2L_N0_GC_QBC_65 }
-dict set mipi_loc_dict uzev 1 data0_p { pin AG6 pin_name IO_L14P_T2L_N2_GC_65 }
-dict set mipi_loc_dict uzev 1 data1_p { pin AF12 pin_name IO_L2P_T0L_N2_65 }
-dict set mipi_loc_dict uzev 1 data2_p { pin AJ5 pin_name IO_L16P_T2U_N6_QBC_AD3P_65 }
-dict set mipi_loc_dict uzev 1 data3_p { pin AK7 pin_name IO_L15P_T2L_N4_AD11P_65 }
-dict set mipi_loc_dict pynqzu 0 bank 65
-dict set mipi_loc_dict pynqzu 0 clk_p { pin P7 pin_name IO_L16P_T2U_N6_QBC_AD3P_65 }
-dict set mipi_loc_dict pynqzu 0 data0_p { pin H9 pin_name IO_L24P_T3U_N10_PERSTN1_I2C_SDA_65 }
-dict set mipi_loc_dict pynqzu 0 data1_p { pin J1 pin_name IO_L8P_T1L_N2_AD5P_65 }
-dict set mipi_loc_dict pynqzu 0 data2_p { pin J6 pin_name IO_L20P_T3L_N2_AD1P_65 }
-dict set mipi_loc_dict pynqzu 0 data3_p { pin J5 pin_name IO_L19P_T3L_N0_DBC_AD9P_65 }
-dict set mipi_loc_dict pynqzu 1 bank 64
-dict set mipi_loc_dict pynqzu 1 clk_p { pin AD2 pin_name IO_L16P_T2U_N6_QBC_AD3P_64 }
-dict set mipi_loc_dict pynqzu 1 data0_p { pin AC4 pin_name IO_L14P_T2L_N2_GC_64 }
-dict set mipi_loc_dict pynqzu 1 data1_p { pin AB1 pin_name IO_L18P_T2U_N10_AD2P_64 }
-dict set mipi_loc_dict pynqzu 1 data2_p { pin AC9 pin_name IO_L1P_T0L_N0_DBC_64 }
-dict set mipi_loc_dict pynqzu 1 data3_p { pin AG3 pin_name IO_L20P_T3L_N2_AD1P_64 }
-dict set mipi_loc_dict genesyszu 0 bank 65
-dict set mipi_loc_dict genesyszu 0 clk_p { pin H4 pin_name IO_L10P_T1U_N6_QBC_AD4P_65 }
-dict set mipi_loc_dict genesyszu 0 data0_p { pin K2 pin_name IO_L9P_T1L_N4_AD12P_65 }
-dict set mipi_loc_dict genesyszu 0 data1_p { pin R6 pin_name IO_L6P_T0U_N10_AD6P_65 }
-dict set mipi_loc_dict genesyszu 0 data2_p { pin K9 pin_name IO_L23P_T3U_N8_I2C_SCLK_65 }
-dict set mipi_loc_dict genesyszu 0 data3_p { pin R7 pin_name IO_L5P_T0U_N8_AD14P_65 }
-dict set mipi_loc_dict genesyszu 1 bank 64
-dict set mipi_loc_dict genesyszu 1 clk_p { pin AG9 pin_name IO_L7P_T1L_N0_QBC_AD13P_64 }
-dict set mipi_loc_dict genesyszu 1 data0_p { pin AD2 pin_name IO_L16P_T2U_N6_QBC_AD3P_64 }
-dict set mipi_loc_dict genesyszu 1 data1_p { pin AB8 pin_name IO_L3P_T0L_N4_AD15P_64 }
-dict set mipi_loc_dict genesyszu 1 data2_p { pin AH2 pin_name IO_L23P_T3U_N8_64 }
-dict set mipi_loc_dict genesyszu 1 data3_p { pin AF7 pin_name IO_L11P_T1U_N8_GC_64 }
-dict set mipi_loc_dict vcu118_hpc 0 bank 66
-dict set mipi_loc_dict vcu118_hpc 0 clk_p { pin BF10 pin_name IO_L10P_T1U_N6_QBC_AD4P_66 }
-dict set mipi_loc_dict vcu118_hpc 0 data0_p { pin BF12 pin_name IO_L2P_T0L_N2_66 }
-dict set mipi_loc_dict vcu118_hpc 0 data1_p { pin BE14 pin_name IO_L5P_T0U_N8_AD14P_66 }
-dict set mipi_loc_dict vcu118_hpc 0 data2_p { pin BC15 pin_name IO_L21P_T3L_N4_AD8P_66 }
-dict set mipi_loc_dict vcu118_hpc 0 data3_p { pin BE15 pin_name IO_L6P_T0U_N10_AD6P_66 }
-dict set mipi_loc_dict vcu118_hpc 1 bank 67
-dict set mipi_loc_dict vcu118_hpc 1 clk_p { pin AP12 pin_name IO_L16P_T2U_N6_QBC_AD3P_67 }
-dict set mipi_loc_dict vcu118_hpc 1 data0_p { pin AR14 pin_name IO_L13P_T2L_N0_GC_QBC_67 }
-dict set mipi_loc_dict vcu118_hpc 1 data1_p { pin AW13 pin_name IO_L5P_T0U_N8_AD14P_67 }
-dict set mipi_loc_dict vcu118_hpc 1 data2_p { pin AN16 pin_name IO_L17P_T2U_N8_AD10P_67 }
-dict set mipi_loc_dict vcu118_hpc 1 data3_p { pin AP13 pin_name IO_L14P_T2L_N2_GC_67 }
-dict set mipi_loc_dict vcu118_fmcp 0 bank 43
-dict set mipi_loc_dict vcu118_fmcp 0 clk_p { pin AL30 pin_name IO_L16P_T2U_N6_QBC_AD3P_43 }
-dict set mipi_loc_dict vcu118_fmcp 0 data0_p { pin AR37 pin_name IO_L6P_T0U_N10_AD6P_43 }
-dict set mipi_loc_dict vcu118_fmcp 0 data1_p { pin AP38 pin_name IO_L1P_T0L_N0_DBC_43 }
-dict set mipi_loc_dict vcu118_fmcp 0 data2_p { pin AP36 pin_name IO_L5P_T0U_N8_AD14P_43 }
-dict set mipi_loc_dict vcu118_fmcp 0 data3_p { pin AK29 pin_name IO_L18P_T2U_N10_AD2P_43 }
-dict set mipi_loc_dict vcu118_fmcp 1 bank 45
-dict set mipi_loc_dict vcu118_fmcp 1 clk_p { pin R31 pin_name IO_L10P_T1U_N6_QBC_AD4P_45 }
-dict set mipi_loc_dict vcu118_fmcp 1 data0_p { pin R34 pin_name IO_L13P_T2L_N0_GC_QBC_45 }
-dict set mipi_loc_dict vcu118_fmcp 1 data1_p { pin N34 pin_name IO_L20P_T3L_N2_AD1P_45 }
-dict set mipi_loc_dict vcu118_fmcp 1 data2_p { pin Y32 pin_name IO_L1P_T0L_N0_DBC_45 }
-dict set mipi_loc_dict vcu118_fmcp 1 data3_p { pin T34 pin_name IO_L6P_T0U_N10_AD6P_45 }
-
 # Set the reference directory for source file relative paths (by default the value is script directory path)
 set origin_dir "."
 
@@ -281,6 +170,9 @@ set_property -name "steps.write_bitstream.args.verbose" -value "0" -objects $obj
 current_run -implementation [get_runs impl_1]
 
 puts "INFO: Project created:${design_name}"
+
+# Create the MIPI LOC dictionary that is used by the block design script
+source $origin_dir/src/bd/mipi_locs.tcl
 
 # Create block design
 source $origin_dir/src/bd/design_1-${bd_script}.tcl
