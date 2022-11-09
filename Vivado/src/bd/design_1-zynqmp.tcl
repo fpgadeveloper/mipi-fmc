@@ -49,11 +49,14 @@ proc create_mipi_pipe { index loc_dict } {
   create_bd_pin -dir O mipi_sub_irq
   create_bd_pin -dir O demosaic_irq
   create_bd_pin -dir O vdma_irq
+  create_bd_pin -dir O iic2intc_irpt
   
   # Create the interfaces of the block
   create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S_AXI_LITE
   create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 M_AXI_S2MM
   create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:mipi_phy_rtl:1.0 mipi_phy_if
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 IIC
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 GPIO
   
   # Add and configure the MIPI Subsystem IP
   set clk_pin [dict get $loc_dict clk pin]
@@ -111,7 +114,7 @@ proc create_mipi_pipe { index loc_dict } {
   # Add and configure the AXI Interconnect
   set axi_int_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_int_0 ]
   set_property -dict [list \
-  CONFIG.NUM_MI {4} \
+  CONFIG.NUM_MI {6} \
   ] $axi_int_0
   
   # Add and configure the AXIS Subset Converter
@@ -156,6 +159,13 @@ proc create_mipi_pipe { index loc_dict } {
   CONFIG.c_include_mm2s {0} \
   ] $vdma_0
   
+  # Add and configure AXI IIC
+  set axi_iic [create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic:2.0 axi_iic_0]
+  
+  # Add and configure AXI GPIO
+  set axi_gpio [create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 axi_gpio_0]
+  set_property -dict [list CONFIG.C_GPIO_WIDTH {8} CONFIG.C_ALL_OUTPUTS {1}] $axi_gpio
+  
   # Connect the 200M D-PHY clock
   connect_bd_net [get_bd_pins dphy_clk_200M] [get_bd_pins mipi_csi2_rx_subsyst_0/dphy_clk_200M]
   # Connect the 100M video clock
@@ -173,9 +183,13 @@ proc create_mipi_pipe { index loc_dict } {
   connect_bd_net [get_bd_pins s_axi_lite_aclk] [get_bd_pins axi_int_0/M01_ACLK]
   connect_bd_net [get_bd_pins s_axi_lite_aclk] [get_bd_pins axi_int_0/M02_ACLK]
   connect_bd_net [get_bd_pins s_axi_lite_aclk] [get_bd_pins axi_int_0/M03_ACLK]
+  connect_bd_net [get_bd_pins s_axi_lite_aclk] [get_bd_pins axi_int_0/M04_ACLK]
+  connect_bd_net [get_bd_pins s_axi_lite_aclk] [get_bd_pins axi_int_0/M05_ACLK]
   connect_bd_net [get_bd_pins s_axi_lite_aclk] [get_bd_pins mipi_csi2_rx_subsyst_0/lite_aclk]
   connect_bd_net [get_bd_pins s_axi_lite_aclk] [get_bd_pins axi_vdma_0/s_axi_lite_aclk]
   connect_bd_net [get_bd_pins s_axi_lite_aclk] [get_bd_pins axi_vdma_0/m_axi_s2mm_aclk]
+  connect_bd_net [get_bd_pins s_axi_lite_aclk] [get_bd_pins axi_iic_0/s_axi_aclk]
+  connect_bd_net [get_bd_pins s_axi_lite_aclk] [get_bd_pins axi_gpio_0/s_axi_aclk]
   # Connect the AXI-Lite resets
   connect_bd_net [get_bd_pins aresetn] [get_bd_pins axi_int_0/ARESETN] -boundary_type upper
   connect_bd_net [get_bd_pins aresetn] [get_bd_pins axi_int_0/S00_ARESETN] -boundary_type upper
@@ -183,6 +197,8 @@ proc create_mipi_pipe { index loc_dict } {
   connect_bd_net [get_bd_pins aresetn] [get_bd_pins axi_int_0/M01_ARESETN] -boundary_type upper
   connect_bd_net [get_bd_pins aresetn] [get_bd_pins axi_int_0/M02_ARESETN] -boundary_type upper
   connect_bd_net [get_bd_pins aresetn] [get_bd_pins axi_int_0/M03_ARESETN] -boundary_type upper
+  connect_bd_net [get_bd_pins aresetn] [get_bd_pins axi_int_0/M04_ARESETN] -boundary_type upper
+  connect_bd_net [get_bd_pins aresetn] [get_bd_pins axi_int_0/M05_ARESETN] -boundary_type upper
   connect_bd_net [get_bd_pins aresetn] [get_bd_pins subset_conv_0/aresetn]
   connect_bd_net [get_bd_pins aresetn] [get_bd_pins subset_conv_1/aresetn]
   connect_bd_net [get_bd_pins aresetn] [get_bd_pins mipi_csi2_rx_subsyst_0/lite_aresetn]
@@ -190,12 +206,16 @@ proc create_mipi_pipe { index loc_dict } {
   connect_bd_net [get_bd_pins aresetn] [get_bd_pins demosaic_0/ap_rst_n]
   connect_bd_net [get_bd_pins aresetn] [get_bd_pins pixel_pack_0/ap_rst_n]
   connect_bd_net [get_bd_pins aresetn] [get_bd_pins axi_vdma_0/axi_resetn]
+  connect_bd_net [get_bd_pins aresetn] [get_bd_pins axi_iic_0/s_axi_aresetn]
+  connect_bd_net [get_bd_pins aresetn] [get_bd_pins axi_gpio_0/s_axi_aresetn]
   # Connect AXI Lite interfaces
   connect_bd_intf_net -boundary_type upper [get_bd_intf_pins S_AXI_LITE] [get_bd_intf_pins axi_int_0/S00_AXI]
   connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_int_0/M00_AXI] [get_bd_intf_pins mipi_csi2_rx_subsyst_0/csirxss_s_axi]
   connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_int_0/M01_AXI] [get_bd_intf_pins demosaic_0/s_axi_CTRL]
   connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_int_0/M02_AXI] [get_bd_intf_pins pixel_pack_0/s_axi_control]
   connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_int_0/M03_AXI] [get_bd_intf_pins axi_vdma_0/S_AXI_LITE]
+  connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_int_0/M04_AXI] [get_bd_intf_pins axi_iic_0/S_AXI]
+  connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_int_0/M05_AXI] [get_bd_intf_pins axi_gpio_0/S_AXI]
   # Connect the AXI Streaming interfaces
   connect_bd_intf_net [get_bd_intf_pins mipi_csi2_rx_subsyst_0/video_out] [get_bd_intf_pins subset_conv_0/S_AXIS]
   connect_bd_intf_net [get_bd_intf_pins ila_0/SLOT_0_AXIS] [get_bd_intf_pins subset_conv_0/S_AXIS]
@@ -207,13 +227,24 @@ proc create_mipi_pipe { index loc_dict } {
   connect_bd_intf_net -boundary_type upper [get_bd_intf_pins mipi_phy_if] [get_bd_intf_pins mipi_csi2_rx_subsyst_0/mipi_phy_if]
   # Connect the VDMA AXI MM interface
   connect_bd_intf_net [get_bd_intf_pins M_AXI_S2MM] [get_bd_intf_pins axi_vdma_0/M_AXI_S2MM]
+  # Connect the I2C interface
+  connect_bd_intf_net [get_bd_intf_pins IIC] [get_bd_intf_pins axi_iic_0/IIC]
+  # Connect the GPIO interface
+  connect_bd_intf_net [get_bd_intf_pins GPIO] [get_bd_intf_pins axi_gpio_0/GPIO]
   # Connect interrupts
   connect_bd_net [get_bd_pins mipi_sub_irq] [get_bd_pins mipi_csi2_rx_subsyst_0/csirxss_csi_irq]
   connect_bd_net [get_bd_pins demosaic_irq] [get_bd_pins demosaic_0/interrupt]
   connect_bd_net [get_bd_pins vdma_irq] [get_bd_pins axi_vdma_0/s2mm_introut]
+  connect_bd_net [get_bd_pins iic2intc_irpt] [get_bd_pins axi_iic_0/iic2intc_irpt]
   
   current_bd_instance \
 }
+
+# AXI Lite ports
+set axi_lite_ports {}
+
+# List of interrupt pins
+set intr_list {}
 
 # Add the Processor System and apply board preset
 create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e zynq_ultra_ps_e_0
@@ -264,12 +295,30 @@ connect_bd_net [get_bd_pins clk_wiz_0/locked] [get_bd_pins rst_ps_axi_100M/dcm_l
 # Add and configure AXI interrupt controller with concat
 set axi_interrupt [create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc:4.1 axi_intc_0]
 set concat [create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0]
-set n_interrupts [expr {$num_cams*3}]
-set_property -dict [list CONFIG.NUM_PORTS $n_interrupts] $concat
 connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_intc_0/s_axi_aclk]
 connect_bd_net [get_bd_pins xlconcat_0/dout] [get_bd_pins axi_intc_0/intr]
 connect_bd_net [get_bd_pins axi_intc_0/irq] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq0]
 connect_bd_net [get_bd_pins rst_ps_axi_100M/peripheral_aresetn] [get_bd_pins axi_intc_0/s_axi_aresetn]
+lappend axi_lite_ports [list "axi_intc_0/s_axi" "clk_wiz_0/clk_out2" "rst_ps_axi_100M/peripheral_aresetn"]
+
+# Add constant for the PIN_SWAP pin (1 for UltraZed-EV Carrier, 0 for all other boards)
+set pin_swap [create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 pin_swap]
+if { $target == "uzev" } {
+  set_property -dict [list CONFIG.CONST_WIDTH {1} CONFIG.CONST_VAL {1}] $pin_swap
+} else {
+  set_property -dict [list CONFIG.CONST_WIDTH {1} CONFIG.CONST_VAL {0}] $pin_swap
+}
+create_bd_port -dir O pin_swap
+connect_bd_net [get_bd_ports pin_swap] [get_bd_pins pin_swap/dout]
+
+# Add and configure AXI GPIO
+set rsvd_gpio [create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 rsvd_gpio]
+set_property -dict [list CONFIG.C_GPIO_WIDTH {3} CONFIG.C_ALL_OUTPUTS {1}] $rsvd_gpio
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins rsvd_gpio/s_axi_aclk]
+connect_bd_net [get_bd_pins rst_ps_axi_100M/peripheral_aresetn] [get_bd_pins rsvd_gpio/s_axi_aresetn]
+lappend axi_lite_ports [list "rsvd_gpio/S_AXI" "clk_wiz_0/clk_out2" "rst_ps_axi_100M/peripheral_aresetn"]
+create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 rsvd_gpio
+connect_bd_intf_net [get_bd_intf_pins rsvd_gpio/GPIO] [get_bd_intf_ports rsvd_gpio]
 
 # THE BELOW CONSTANT IS FOR VERIFICATION WITH DIGILENT PCAM ON THE PYNQ-ZU
 #
@@ -279,21 +328,6 @@ connect_bd_net [get_bd_pins rst_ps_axi_100M/peripheral_aresetn] [get_bd_pins axi
 # connect_bd_net [get_bd_ports cam_enable] [get_bd_pins cam_enable_0/dout]
 #
 # THE ABOVE CONSTANT IS FOR VERIFICATION WITH DIGILENT PCAM ON THE PYNQ-ZU
-
-# Add AXI Interconnect for the AXI Lite interfaces
-set n_periphs 1
-set n_periph_ports [expr {$n_periphs+$num_cams}]
-set axi_periph_0 [create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_periph_0]
-set_property -dict [list CONFIG.NUM_MI $n_periph_ports] $axi_periph_0
-connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_periph_0/ACLK]
-connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_periph_0/S00_ACLK]
-connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_periph_0/M00_ACLK]
-connect_bd_net [get_bd_pins rst_ps_axi_100M/peripheral_aresetn] [get_bd_pins axi_periph_0/ARESETN]
-connect_bd_net [get_bd_pins rst_ps_axi_100M/peripheral_aresetn] [get_bd_pins axi_periph_0/S00_ARESETN]
-connect_bd_net [get_bd_pins rst_ps_axi_100M/peripheral_aresetn] [get_bd_pins axi_periph_0/M00_ARESETN]
-connect_bd_intf_net [get_bd_intf_pins zynq_ultra_ps_e_0/M_AXI_HPM0_FPD] -boundary_type upper [get_bd_intf_pins axi_periph_0/S00_AXI]
-# Connect AXI Interrupt controller to AXI periph
-connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_periph_0/M00_AXI] [get_bd_intf_pins axi_intc_0/s_axi]
 
 # Add the AXI SmartConnect for the VDMAs
 create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 smartconnect_0
@@ -318,23 +352,57 @@ for {set i 0} {$i < $num_cams} {incr i} {
   connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins mipi_$i/s_axi_lite_aclk]
   # Connect reset
   connect_bd_net [get_bd_pins rst_ps_axi_100M/peripheral_aresetn] [get_bd_pins mipi_$i/aresetn]
-  # Connect interrupts
-  set intr_index [expr {$i*3+0}]
-  connect_bd_net [get_bd_pins mipi_$i/mipi_sub_irq] [get_bd_pins xlconcat_0/In$intr_index]
-  set intr_index [expr {$i*3+1}]
-  connect_bd_net [get_bd_pins mipi_$i/demosaic_irq] [get_bd_pins xlconcat_0/In$intr_index]
-  set intr_index [expr {$i*3+2}]
-  connect_bd_net [get_bd_pins mipi_$i/vdma_irq] [get_bd_pins xlconcat_0/In$intr_index]
-  # Connect AXI Lite
-  set periph_port [expr {$i+$n_periphs}]
-  connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_periph_0/M0${periph_port}_AXI] [get_bd_intf_pins mipi_$i/S_AXI_LITE]
-  connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_periph_0/M0${periph_port}_ACLK]
-  connect_bd_net [get_bd_pins rst_ps_axi_100M/peripheral_aresetn] [get_bd_pins axi_periph_0/M0${periph_port}_ARESETN]
+  # Add interrupts to the interrupt list to be connected later
+  lappend intr_list "mipi_$i/mipi_sub_irq"
+  lappend intr_list "mipi_$i/demosaic_irq"
+  lappend intr_list "mipi_$i/vdma_irq"
+  lappend intr_list "mipi_$i/iic2intc_irpt"
+  
+  # AXI Lite interfaces to be connected later
+  lappend axi_lite_ports [list "mipi_$i/S_AXI_LITE" "clk_wiz_0/clk_out2" "rst_ps_axi_100M/peripheral_aresetn"]
   # Connect the MIPI D-Phy interface
   create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:mipi_phy_rtl:1.0 mipi_phy_if_$i
   connect_bd_intf_net [get_bd_intf_ports mipi_phy_if_$i] -boundary_type upper [get_bd_intf_pins mipi_$i/mipi_phy_if]
+  # Connect the I2C interface
+  create_bd_intf_port -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 iic_$i
+  connect_bd_intf_net [get_bd_intf_ports iic_$i] [get_bd_intf_pins mipi_$i/IIC]
+  # Connect the GPIO interface
+  create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 gpio_$i
+  connect_bd_intf_net [get_bd_intf_ports gpio_$i] [get_bd_intf_pins mipi_$i/GPIO]
   # Connect the AXI MM interface of the VDMA
   connect_bd_intf_net -boundary_type upper [get_bd_intf_pins mipi_$i/M_AXI_S2MM] [get_bd_intf_pins smartconnect_0/S0${i}_AXI]
+}
+
+# Add AXI Interconnect for the AXI Lite interfaces
+
+set n_periph_ports [llength $axi_lite_ports]
+set axi_periph_0 [create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_periph_0]
+set_property -dict [list CONFIG.NUM_MI $n_periph_ports] $axi_periph_0
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_periph_0/ACLK]
+connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axi_periph_0/S00_ACLK]
+connect_bd_net [get_bd_pins rst_ps_axi_100M/peripheral_aresetn] [get_bd_pins axi_periph_0/ARESETN]
+connect_bd_net [get_bd_pins rst_ps_axi_100M/peripheral_aresetn] [get_bd_pins axi_periph_0/S00_ARESETN]
+connect_bd_intf_net [get_bd_intf_pins zynq_ultra_ps_e_0/M_AXI_HPM0_FPD] -boundary_type upper [get_bd_intf_pins axi_periph_0/S00_AXI]
+# Attach all of the ports, their clocks and resets
+set port_num 0
+foreach port $axi_lite_ports {
+  puts $port
+  set port_label [lindex $port 0]
+  connect_bd_intf_net -boundary_type upper [get_bd_intf_pins axi_periph_0/M0${port_num}_AXI] [get_bd_intf_pins $port_label]
+  set port_clk [lindex $port 1]
+  connect_bd_net [get_bd_pins $port_clk] [get_bd_pins axi_periph_0/M0${port_num}_ACLK]
+  set port_rst [lindex $port 2]
+  connect_bd_net [get_bd_pins $port_rst] [get_bd_pins axi_periph_0/M0${port_num}_ARESETN]
+  set port_num [expr {$port_num+1}]
+}
+
+# Connect the interrupts
+set n_interrupts [llength $intr_list]
+set_property -dict [list CONFIG.NUM_PORTS $n_interrupts] $concat
+set intr_index 0
+foreach intr $intr_list {
+  connect_bd_net [get_bd_pins $intr] [get_bd_pins xlconcat_0/In$intr_index]
+  set intr_index [expr {$intr_index+1}]
 }
 
 # Assign addresses
