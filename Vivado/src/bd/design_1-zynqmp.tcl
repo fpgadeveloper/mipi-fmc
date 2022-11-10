@@ -301,9 +301,9 @@ connect_bd_net [get_bd_pins axi_intc_0/irq] [get_bd_pins zynq_ultra_ps_e_0/pl_ps
 connect_bd_net [get_bd_pins rst_ps_axi_100M/peripheral_aresetn] [get_bd_pins axi_intc_0/s_axi_aresetn]
 lappend axi_lite_ports [list "axi_intc_0/s_axi" "clk_wiz_0/clk_out2" "rst_ps_axi_100M/peripheral_aresetn"]
 
-# Add constant for the PIN_SWAP pin (1 for UltraZed-EV Carrier, 0 for all other boards)
+# Add constant for the PIN_SWAP pin (1 for UltraZed-EV Carrier and Genesys ZU, 0 for all other boards)
 set pin_swap [create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 pin_swap]
-if { $target == "uzev" } {
+if { ($target == "uzev") || ($target == "genesyszu") } {
   set_property -dict [list CONFIG.CONST_WIDTH {1} CONFIG.CONST_VAL {1}] $pin_swap
 } else {
   set_property -dict [list CONFIG.CONST_WIDTH {1} CONFIG.CONST_VAL {0}] $pin_swap
