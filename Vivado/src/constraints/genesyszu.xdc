@@ -1,3 +1,14 @@
+
+# DisplayPort AUX channel over EMIO
+set_property PACKAGE_PIN K12 [get_ports dp_aux_din]; #IO_L2N_AD14N_45/25 Sch=dp_aux_din
+set_property IOSTANDARD LVCMOS18 [get_ports dp_aux_din]
+set_property PACKAGE_PIN K13 [get_ports {dp_aux_doe}]; #IO_L2P_AD14P_45/25 Sch=dp_aux_doe
+set_property IOSTANDARD LVCMOS18 [get_ports {dp_aux_doe}]
+set_property PACKAGE_PIN J11 [get_ports dp_aux_dout]; #IO_L1P_AD15P_45/25 Sch=dp_aux_dout
+set_property IOSTANDARD LVCMOS18 [get_ports dp_aux_dout]
+set_property PACKAGE_PIN J10 [get_ports dp_aux_hotplug_detect]; #IO_L1N_AD15N_45/25 Sch=dp_aux_hotplug_detect
+set_property IOSTANDARD LVCMOS18 [get_ports dp_aux_hotplug_detect]
+
 # I2C signals for MIPI 0
 set_property PACKAGE_PIN R6 [get_ports iic_0_scl_io]; # LA05_P
 set_property PACKAGE_PIN T6 [get_ports iic_0_sda_io]; # LA05_N

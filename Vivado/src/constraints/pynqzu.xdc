@@ -1,25 +1,3 @@
-# CONSTRAINTS BELOW ARE FOR FUNCTIONAL VERIFICATION WITH DIGILENT PCAM
-#
-# # Enable signal
-# set_property PACKAGE_PIN AH7 [get_ports {cam_enable[0]}]; Bank 64, CAM_GPIO_LS
-# set_property IOSTANDARD LVCMOS18 [get_ports {cam_enable[0]}]
-# 
-# # MIPI interface 0
-# set_property PACKAGE_PIN D7 [get_ports {mipi_phy_if_0_clk_p}]
-# set_property PACKAGE_PIN D6 [get_ports {mipi_phy_if_0_clk_n}]
-# 
-# set_property PACKAGE_PIN E5 [get_ports {mipi_phy_if_0_data_p[0]}]
-# set_property PACKAGE_PIN D5 [get_ports {mipi_phy_if_0_data_n[0]}]
-# set_property PACKAGE_PIN G6 [get_ports {mipi_phy_if_0_data_p[1]}]
-# set_property PACKAGE_PIN F6 [get_ports {mipi_phy_if_0_data_n[1]}]
-# 
-# set_property IOSTANDARD MIPI_DPHY_DCI [get_ports mipi_phy_if_0_clk_p]
-# set_property IOSTANDARD MIPI_DPHY_DCI [get_ports mipi_phy_if_0_clk_n]
-# set_property IOSTANDARD MIPI_DPHY_DCI [get_ports mipi_phy_if_0_data_p[*]]
-# set_property IOSTANDARD MIPI_DPHY_DCI [get_ports mipi_phy_if_0_data_n[*]]
-#
-# CONSTRAINTS ABOVE ARE FOR FUNCTIONAL VERIFICATION WITH DIGILENT PCAM
-
 # I2C signals for MIPI 0
 set_property PACKAGE_PIN J1 [get_ports iic_0_scl_io]; # LA05_P
 set_property PACKAGE_PIN H1 [get_ports iic_0_sda_io]; # LA05_N

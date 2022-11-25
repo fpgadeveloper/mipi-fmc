@@ -120,3 +120,11 @@ dict set mipi_loc_dict vcu118_fmcp 1 data0 { pin R34 pin_name IO_L13P_T2L_N0_GC_
 dict set mipi_loc_dict vcu118_fmcp 1 data1 { pin Y32 pin_name IO_L1P_T0L_N0_DBC_45 }
 dict set mipi_loc_dict vcu118_fmcp 1 data2 { pin T34 pin_name IO_L6P_T0U_N10_AD6P_45 }
 dict set mipi_loc_dict vcu118_fmcp 1 data3 { pin Y34 pin_name IO_L3P_T0L_N4_AD15P_45 }
+dict set mipi_loc_dict pynqzu_pcam 0 bank 66
+dict set mipi_loc_dict pynqzu_pcam 0 clk { pin D7 pin_name IO_L13P_T2L_N0_GC_QBC_66 }
+dict set mipi_loc_dict pynqzu_pcam 0 data0 { pin E5 pin_name IO_L14P_T2L_N2_GC_66 }
+dict set mipi_loc_dict pynqzu_pcam 0 data1 { pin G6 pin_name IO_L15P_T2L_N4_AD11P_66 }
+dict set mipi_loc_dict kv260_pcam 0 bank 66
+dict set mipi_loc_dict kv260_pcam 0 clk { pin D7 pin_name IO_L13P_T2L_N0_GC_QBC_66 }
+dict set mipi_loc_dict kv260_pcam 0 data0 { pin E5 pin_name IO_L14P_T2L_N2_GC_66 }
+dict set mipi_loc_dict kv260_pcam 0 data1 { pin G6 pin_name IO_L15P_T2L_N4_AD11P_66 }
