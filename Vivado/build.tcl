@@ -45,6 +45,7 @@ dict set target_dict uzev { xczu7ev-fbvb900-1-i avnet.com:ultrazed_7ev_cc:part0:
 dict set target_dict vcu118_hpc { xcvu9p-flga2104-2L-e xilinx.com:vcu118:part0:2.4 2 mb }
 dict set target_dict vcu118_fmcp { xcvu9p-flga2104-2L-e xilinx.com:vcu118:part0:2.4 2 mb }
 dict set target_dict kv260_pcam { xck26-sfvc784-2LV-c xilinx.com:kv260:part0:1.1 1 zynqmp }
+dict set target_dict kv260_ias { xck26-sfvc784-2LV-c xilinx.com:kv260:part0:1.1 1 zynqmp }
 
 if { $argc == 1 } {
   set target [lindex $argv 0]

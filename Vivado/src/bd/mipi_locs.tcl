@@ -128,3 +128,9 @@ dict set mipi_loc_dict kv260_pcam 0 bank 66
 dict set mipi_loc_dict kv260_pcam 0 clk { pin D7 pin_name IO_L13P_T2L_N0_GC_QBC_66 }
 dict set mipi_loc_dict kv260_pcam 0 data0 { pin E5 pin_name IO_L14P_T2L_N2_GC_66 }
 dict set mipi_loc_dict kv260_pcam 0 data1 { pin G6 pin_name IO_L15P_T2L_N4_AD11P_66 }
+dict set mipi_loc_dict kv260_ias 0 bank 66
+dict set mipi_loc_dict kv260_ias 0 clk { pin C1 pin_name IO_L7P_T1L_N0_QBC_AD13P_66 }
+dict set mipi_loc_dict kv260_ias 0 data0 { pin A2 pin_name IO_L8P_T1L_N2_AD5P_66 }
+dict set mipi_loc_dict kv260_ias 0 data1 { pin B3 pin_name IO_L9P_T1L_N4_AD12P_66 }
+dict set mipi_loc_dict kv260_ias 0 data2 { pin B4 pin_name IO_L10P_T1U_N6_QBC_AD4P_66 }
+dict set mipi_loc_dict kv260_ias 0 data3 { pin D4 pin_name IO_L11P_T1U_N8_GC_66 }

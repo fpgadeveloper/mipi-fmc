@@ -77,12 +77,20 @@ dict set dp_dict kv260_pcam dpaux "MIO 27 .. 30"
 dict set dp_dict kv260_pcam lane_sel "Dual Lower"
 dict set dp_dict kv260_pcam ref_clk_freq "27"
 dict set dp_dict kv260_pcam ref_clk_sel "Ref Clk0"
+dict set dp_dict kv260_ias dpaux "MIO 27 .. 30"
+dict set dp_dict kv260_ias lane_sel "Dual Lower"
+dict set dp_dict kv260_ias ref_clk_freq "27"
+dict set dp_dict kv260_ias ref_clk_sel "Ref Clk0"
 
 # Is this a PCam target
 set pcam [expr {[string first "pcam" $target] != -1}]
+# Is this an IAS target
+set ias [expr {[string first "ias" $target] != -1}]
 
 # Procedure for creating a MIPI pipe for one camera
-proc create_mipi_pipe { index loc_dict pcam } {
+proc create_mipi_pipe { index loc_dict } {
+  global pcam
+  global ias
   set hier_obj [create_bd_cell -type hier mipi_$index]
   current_bd_instance $hier_obj
   
@@ -107,14 +115,14 @@ proc create_mipi_pipe { index loc_dict pcam } {
   create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 GPIO
   
   # Add and configure the MIPI Subsystem IP
+  set clk_pin [dict get $loc_dict clk pin]
+  set clk_pin_name [dict get $loc_dict clk pin_name]
+  set data0_pin [dict get $loc_dict data0 pin]
+  set data0_pin_name [dict get $loc_dict data0 pin_name]
+  set data1_pin [dict get $loc_dict data1 pin]
+  set data1_pin_name [dict get $loc_dict data1 pin_name]
+  set bank [dict get $loc_dict bank]
   if { $pcam == 1 } {
-    set clk_pin [dict get $loc_dict clk pin]
-    set clk_pin_name [dict get $loc_dict clk pin_name]
-    set data0_pin [dict get $loc_dict data0 pin]
-    set data0_pin_name [dict get $loc_dict data0 pin_name]
-    set data1_pin [dict get $loc_dict data1 pin]
-    set data1_pin_name [dict get $loc_dict data1 pin_name]
-    set bank [dict get $loc_dict bank]
     set mipi_csi2_rx_subsyst [ create_bd_cell -type ip -vlnv xilinx.com:ip:mipi_csi2_rx_subsystem:5.1 mipi_csi2_rx_subsyst_0 ]
     set_property -dict [ list \
       CONFIG.SupportLevel {1} \
@@ -134,40 +142,33 @@ proc create_mipi_pipe { index loc_dict pcam } {
       CONFIG.HP_IO_BANK_SELECTION $bank \
     ] $mipi_csi2_rx_subsyst
   } else {
-    set clk_pin [dict get $loc_dict clk pin]
-    set clk_pin_name [dict get $loc_dict clk pin_name]
-    set data0_pin [dict get $loc_dict data0 pin]
-    set data0_pin_name [dict get $loc_dict data0 pin_name]
-    set data1_pin [dict get $loc_dict data1 pin]
-    set data1_pin_name [dict get $loc_dict data1 pin_name]
     set data2_pin [dict get $loc_dict data2 pin]
     set data2_pin_name [dict get $loc_dict data2 pin_name]
     set data3_pin [dict get $loc_dict data3 pin]
     set data3_pin_name [dict get $loc_dict data3 pin_name]
-    set bank [dict get $loc_dict bank]
     set mipi_csi2_rx_subsyst [ create_bd_cell -type ip -vlnv xilinx.com:ip:mipi_csi2_rx_subsystem:5.1 mipi_csi2_rx_subsyst_0 ]
     set_property -dict [ list \
-     CONFIG.CLK_LANE_IO_LOC $clk_pin \
-     CONFIG.CLK_LANE_IO_LOC_NAME $clk_pin_name \
-     CONFIG.CMN_NUM_LANES {4} \
-     CONFIG.CMN_PXL_FORMAT {YUV422_8bit} \
-     CONFIG.CMN_VC {0} \
-     CONFIG.CSI_BUF_DEPTH {4096} \
-     CONFIG.C_CSI_FILTER_USERDATATYPE {true} \
-     CONFIG.C_DPHY_LANES {4} \
-     CONFIG.C_HS_LINE_RATE {896} \
-     CONFIG.C_HS_SETTLE_NS {146} \
-     CONFIG.DATA_LANE0_IO_LOC $data0_pin \
-     CONFIG.DATA_LANE0_IO_LOC_NAME $data0_pin_name \
-     CONFIG.DATA_LANE1_IO_LOC $data1_pin \
-     CONFIG.DATA_LANE1_IO_LOC_NAME $data1_pin_name \
-     CONFIG.DATA_LANE2_IO_LOC $data2_pin \
-     CONFIG.DATA_LANE2_IO_LOC_NAME $data2_pin_name \
-     CONFIG.DATA_LANE3_IO_LOC $data3_pin \
-     CONFIG.DATA_LANE3_IO_LOC_NAME $data3_pin_name \
-     CONFIG.DPY_LINE_RATE {896} \
-     CONFIG.HP_IO_BANK_SELECTION $bank \
-     CONFIG.SupportLevel {1} \
+      CONFIG.CLK_LANE_IO_LOC $clk_pin \
+      CONFIG.CLK_LANE_IO_LOC_NAME $clk_pin_name \
+      CONFIG.CMN_NUM_LANES {4} \
+      CONFIG.CMN_PXL_FORMAT {YUV422_8bit} \
+      CONFIG.CMN_VC {0} \
+      CONFIG.CSI_BUF_DEPTH {4096} \
+      CONFIG.C_CSI_FILTER_USERDATATYPE {true} \
+      CONFIG.C_DPHY_LANES {4} \
+      CONFIG.C_HS_LINE_RATE {896} \
+      CONFIG.C_HS_SETTLE_NS {146} \
+      CONFIG.DATA_LANE0_IO_LOC $data0_pin \
+      CONFIG.DATA_LANE0_IO_LOC_NAME $data0_pin_name \
+      CONFIG.DATA_LANE1_IO_LOC $data1_pin \
+      CONFIG.DATA_LANE1_IO_LOC_NAME $data1_pin_name \
+      CONFIG.DATA_LANE2_IO_LOC $data2_pin \
+      CONFIG.DATA_LANE2_IO_LOC_NAME $data2_pin_name \
+      CONFIG.DATA_LANE3_IO_LOC $data3_pin \
+      CONFIG.DATA_LANE3_IO_LOC_NAME $data3_pin_name \
+      CONFIG.DPY_LINE_RATE {896} \
+      CONFIG.HP_IO_BANK_SELECTION $bank \
+      CONFIG.SupportLevel {1} \
     ] $mipi_csi2_rx_subsyst
   }
  
@@ -252,7 +253,11 @@ proc create_mipi_pipe { index loc_dict pcam } {
   
   # Add and configure AXI GPIO
   set axi_gpio [create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_0]
-  set_property -dict [list CONFIG.C_GPIO_WIDTH {8} CONFIG.C_ALL_OUTPUTS {1}] $axi_gpio
+  if { ($pcam != 1) && ($ias != 1) } {
+    set_property -dict [list CONFIG.C_GPIO_WIDTH {8} CONFIG.C_ALL_OUTPUTS {1}] $axi_gpio
+  } else {
+    set_property -dict [list CONFIG.C_GPIO_WIDTH {1} CONFIG.C_ALL_OUTPUTS {1}] $axi_gpio
+  }
   
   # Connect the 200M D-PHY clock
   connect_bd_net [get_bd_pins dphy_clk_200M] [get_bd_pins mipi_csi2_rx_subsyst_0/dphy_clk_200M]
@@ -368,8 +373,8 @@ set_property -dict [list CONFIG.PSU__USE__S_AXI_GP0 {1} \
   CONFIG.PSU__USE__VIDEO {1} \
 ] [get_bd_cells zynq_ultra_ps_e_0]
 
-# KV260 needs UART1 to be enabled
-if { $target == "kv260_pcam" } {
+# KV260 targets needs UART1 to be enabled
+if { [string first "kv260" $target] != -1 } {
   set_property -dict [list CONFIG.PSU__UART1__PERIPHERAL__ENABLE {1} \
     CONFIG.PSU__UART1__PERIPHERAL__IO {MIO 36 .. 37} \
   ] [get_bd_cells zynq_ultra_ps_e_0]
@@ -421,7 +426,7 @@ set concat_0 [create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_0]
 connect_bd_net [get_bd_pins xlconcat_0/dout] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq0]
 
 # Add constant for the PIN_SWAP pin (1 for UltraZed-EV Carrier and Genesys ZU, 0 for all other boards)
-if { $pcam != 1 } {
+if { ($pcam != 1) && ($ias != 1) } {
   set pin_swap [create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant pin_swap]
   if { ($target == "uzev") || ($target == "genesyszu") } {
     set_property -dict [list CONFIG.CONST_WIDTH {1} CONFIG.CONST_VAL {1}] $pin_swap
@@ -433,7 +438,7 @@ if { $pcam != 1 } {
 }
 
 # Add and configure AXI GPIO
-if { $pcam != 1 } {
+if { ($pcam != 1) && ($ias != 1) } {
   set rsvd_gpio [create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio rsvd_gpio]
   set_property -dict [list CONFIG.C_GPIO_WIDTH {3} CONFIG.C_ALL_OUTPUTS {1}] $rsvd_gpio
   connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins rsvd_gpio/s_axi_aclk]
@@ -441,13 +446,6 @@ if { $pcam != 1 } {
   lappend axi_lite_ports [list "rsvd_gpio/S_AXI" "clk_wiz_0/clk_out2" "rst_ps_axi_150M/peripheral_aresetn"]
   create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 rsvd_gpio
   connect_bd_intf_net [get_bd_intf_pins rsvd_gpio/GPIO] [get_bd_intf_ports rsvd_gpio]
-}
-
-# Add constant to enable the Pcam (always enabled)
-if { $pcam == 1 } {
-  create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant cam_enable_0
-  create_bd_port -dir O cam_enable
-  connect_bd_net [get_bd_ports cam_enable] [get_bd_pins cam_enable_0/dout]
 }
 
 # Add the AXI SmartConnect for the VDMAs
@@ -461,7 +459,7 @@ set_property -dict [list CONFIG.NUM_SI $smartcon_ports] [get_bd_cells smartconne
 # Add the MIPI pipes
 for {set i 0} {$i < $num_cams} {incr i} {
   # Create the MIPI pipe block
-  create_mipi_pipe $i [dict get $mipi_loc_dict $target $i] $pcam
+  create_mipi_pipe $i [dict get $mipi_loc_dict $target $i]
   # Externalize all of the strobe propagation pins
   set strobe_pins [get_bd_pins mipi_$i/mipi_csi2_rx_subsyst_0/bg*_nc]
   foreach strobe $strobe_pins {
@@ -491,10 +489,8 @@ for {set i 0} {$i < $num_cams} {incr i} {
   create_bd_intf_port -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 iic_$i
   connect_bd_intf_net [get_bd_intf_ports iic_$i] [get_bd_intf_pins mipi_$i/IIC]
   # Connect the GPIO interface
-  if { $pcam != 1 } {
-    create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 gpio_$i
-    connect_bd_intf_net [get_bd_intf_ports gpio_$i] [get_bd_intf_pins mipi_$i/GPIO]
-  }
+  create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 gpio_$i
+  connect_bd_intf_net [get_bd_intf_ports gpio_$i] [get_bd_intf_pins mipi_$i/GPIO]
   # Connect the AXI MM interface of the VDMA
   set smartcon_index [expr {$i*2}]
   connect_bd_intf_net -boundary_type upper [get_bd_intf_pins mipi_$i/M_AXI_S2MM] [get_bd_intf_pins smartconnect_0/S0${smartcon_index}_AXI]
