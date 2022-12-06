@@ -10,7 +10,9 @@ Vitis/*.log
 Vitis/*.jou
 Vitis/boot/
 Vitis/embeddedsw/
+Vitis/RemoteSystemsTempFiles/
 PetaLinux/*_mipi/
 docs/build/
 HLS/*/*.log
 HLS/*/*/
+Packages/

@@ -29,7 +29,9 @@
 *
 ******************************************************************************/
 #include "xdpdma_video_example.h"
-extern XDpDma_FrameBuffer FrameBuffer;
+// Opsero mod start: Not using graphics source
+//extern XDpDma_FrameBuffer FrameBuffer;
+// Opsero mod end
 
 /******************************************************************************/
 /**
@@ -185,7 +187,9 @@ void DpPsu_Run(Run_Config *RunCfgPtr)
 		if (Status != XST_SUCCESS)
 			return;
 
-		XDpDma_DisplayGfxFrameBuffer(RunCfgPtr->DpDmaPtr, &FrameBuffer);
+// Opsero mod start: Not using graphics source
+		//XDpDma_DisplayGfxFrameBuffer(RunCfgPtr->DpDmaPtr, &FrameBuffer);
+// Opsero mod end
 
 		DpPsu_SetupVideoStream(RunCfgPtr);
 		XDpPsu_EnableMainLink(DpPsuPtr, 1);

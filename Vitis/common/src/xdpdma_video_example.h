@@ -73,8 +73,8 @@ typedef struct {
 } Run_Config;
 
 /************************** Function Prototypes ******************************/
-// Opsero mod start: added extra arguments for configuration of the video mode
-int DpdmaVideoExample(Run_Config *RunCfgPtr,XScuGic *Intr,XVidC_VideoMode mode,u32 linesize,u32 buffersize);
+// Opsero mod start: added extra argument for configuration of the video mode
+int DpdmaVideoExample(Run_Config *RunCfgPtr,XScuGic *Intr,XVidC_VideoMode mode);
 void InitRunConfig(Run_Config *RunCfgPtr,XScuGic *Intr,XVidC_VideoMode mode);
 // Opsero mod end
 int InitDpDmaSubsystem(Run_Config *RunCfgPtr);

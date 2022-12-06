@@ -58,10 +58,10 @@ XAVBuf AVBuf;
 // Opsero mod start
 //XScuGic Intr;
 //Run_Config RunCfg;
-// Opsero mod end
 
-u8 Frame[BUFFERSIZE] __attribute__ ((__aligned__(256)));
-XDpDma_FrameBuffer FrameBuffer;
+//u8 Frame[BUFFERSIZE] __attribute__ ((__aligned__(256)));
+//XDpDma_FrameBuffer FrameBuffer;
+// Opsero mod end
 
 /**************************** Type Definitions *******************************/
 
@@ -113,8 +113,8 @@ int main()
 * @note		None.
 *
 *****************************************************************************/
-// Opsero mod start: added extra arguments for configuration of the video mode
-int DpdmaVideoExample(Run_Config *RunCfgPtr,XScuGic *Intr,XVidC_VideoMode mode,u32 linesize,u32 buffersize)
+// Opsero mod start: added extra argument for configuration of the video mode
+int DpdmaVideoExample(Run_Config *RunCfgPtr,XScuGic *Intr,XVidC_VideoMode mode)
 // Opsero mod end
 
 {
@@ -128,15 +128,17 @@ int DpdmaVideoExample(Run_Config *RunCfgPtr,XScuGic *Intr,XVidC_VideoMode mode,u
 				return XST_FAILURE;
 	}
 
-	xil_printf("Generating Overlay.....\n\r");
-	GraphicsOverlay(Frame, RunCfgPtr);
+// Opsero mod start: Not using graphics overlay
+	//xil_printf("Generating Overlay.....\n\r");
+	//GraphicsOverlay(Frame, RunCfgPtr);
+// Opsero mod end
 
 	/* Populate the FrameBuffer structure with the frame attributes */
-	FrameBuffer.Address = (INTPTR)Frame;
-// Opsero mod start
-	FrameBuffer.Stride = linesize;
-	FrameBuffer.LineSize = linesize;
-	FrameBuffer.Size = buffersize;
+// Opsero mod start: Not using graphics overlay
+	//FrameBuffer.Address = (INTPTR)Frame;
+	//FrameBuffer.Stride = STRIDE;
+	//FrameBuffer.LineSize = LINESIZE;
+	//FrameBuffer.Size = BUFFERSIZE;
 // Opsero mod end
 
 	SetupInterrupts(RunCfgPtr);

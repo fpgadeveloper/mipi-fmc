@@ -130,9 +130,9 @@ proc create_mipi_pipe { index loc_dict } {
       CONFIG.CMN_PXL_FORMAT {RAW10} \
       CONFIG.C_DPHY_LANES {2} \
       CONFIG.C_EN_CSI_V2_0 {true} \
-      CONFIG.C_HS_LINE_RATE {280} \
-      CONFIG.C_HS_SETTLE_NS {170} \
-      CONFIG.DPY_LINE_RATE {280} \
+      CONFIG.C_HS_LINE_RATE {420} \
+      CONFIG.C_HS_SETTLE_NS {158} \
+      CONFIG.DPY_LINE_RATE {420} \
       CONFIG.CLK_LANE_IO_LOC $clk_pin \
       CONFIG.CLK_LANE_IO_LOC_NAME $clk_pin_name \
       CONFIG.DATA_LANE0_IO_LOC $data0_pin \
@@ -198,17 +198,17 @@ proc create_mipi_pipe { index loc_dict } {
   # Add and configure demosaic
   set v_demosaic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_demosaic demosaic_0 ]
   set_property -dict [ list \
-   CONFIG.MAX_COLS {2048} \
+   CONFIG.MAX_COLS {1920} \
    CONFIG.MAX_DATA_WIDTH {8} \
-   CONFIG.MAX_ROWS {1024} \
+   CONFIG.MAX_ROWS {1080} \
   ] $v_demosaic_0
   
   # Add and configure the V Gamma LUT
   set v_gamma_lut [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_gamma_lut v_gamma_lut ]
   set_property -dict [ list \
-   CONFIG.MAX_COLS {2048} \
+   CONFIG.MAX_COLS {1920} \
    CONFIG.MAX_DATA_WIDTH {8} \
-   CONFIG.MAX_ROWS {1024} \
+   CONFIG.MAX_ROWS {1080} \
   ] $v_gamma_lut
   
   # # Add and configure the AXIS Subset Converter
@@ -539,14 +539,26 @@ connect_bd_net [get_bd_pins rst_dp_vid_74M/peripheral_reset] [get_bd_pins axi4s_
 # Add the Video Timing Controller IP
 set v_tc [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_tc v_tc ]
 set_property -dict [ list \
-  CONFIG.GEN_F0_VBLANK_HEND {640} \
-  CONFIG.GEN_F0_VBLANK_HSTART {640} \
-  CONFIG.GEN_F0_VSYNC_HEND {695} \
-  CONFIG.GEN_F0_VSYNC_HSTART {640} \
-  CONFIG.GEN_F1_VBLANK_HEND {640} \
-  CONFIG.GEN_F1_VBLANK_HSTART {640} \
-  CONFIG.GEN_F1_VSYNC_HEND {695} \
-  CONFIG.GEN_F1_VSYNC_HSTART {695} \
+  CONFIG.VIDEO_MODE {1080p} \
+  CONFIG.GEN_F0_VSYNC_VSTART {1083} \
+  CONFIG.GEN_F1_VSYNC_VSTART {1083} \
+  CONFIG.GEN_HACTIVE_SIZE {1920} \
+  CONFIG.GEN_HSYNC_END {2052} \
+  CONFIG.GEN_HFRAME_SIZE {2200} \
+  CONFIG.GEN_F0_VSYNC_HSTART {1004} \
+  CONFIG.GEN_F1_VSYNC_HSTART {1004} \
+  CONFIG.GEN_F0_VSYNC_HEND {1004} \
+  CONFIG.GEN_F1_VSYNC_HEND {1004} \
+  CONFIG.GEN_F0_VFRAME_SIZE {1125} \
+  CONFIG.GEN_F1_VFRAME_SIZE {1125} \
+  CONFIG.GEN_F0_VSYNC_VEND {1088} \
+  CONFIG.GEN_F1_VSYNC_VEND {1088} \
+  CONFIG.GEN_F0_VBLANK_HEND {960} \
+  CONFIG.GEN_F1_VBLANK_HEND {960} \
+  CONFIG.GEN_HSYNC_START {2008} \
+  CONFIG.GEN_VACTIVE_SIZE {1080} \
+  CONFIG.GEN_F0_VBLANK_HSTART {960} \
+  CONFIG.GEN_F1_VBLANK_HSTART {960} \
   CONFIG.enable_detection {false} \
   CONFIG.enable_generation {true} \
 ] $v_tc
