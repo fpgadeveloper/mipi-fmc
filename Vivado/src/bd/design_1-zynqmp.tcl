@@ -514,9 +514,11 @@ for {set i 0} {$i < $num_cams} {incr i} {
   # Connect the MIPI D-Phy interface
   create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:mipi_phy_rtl:1.0 mipi_phy_if_$i
   connect_bd_intf_net [get_bd_intf_ports mipi_phy_if_$i] -boundary_type upper [get_bd_intf_pins mipi_$i/mipi_phy_if]
-  # Connect the I2C interface
-  create_bd_intf_port -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 iic_$i
-  connect_bd_intf_net [get_bd_intf_ports iic_$i] [get_bd_intf_pins mipi_$i/IIC]
+  # Connect the I2C interface (PYNQ-ZU PCAM design uses PS I2C)
+  if { $target != "pynqzu_pcam" } {
+    create_bd_intf_port -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 iic_$i
+    connect_bd_intf_net [get_bd_intf_ports iic_$i] [get_bd_intf_pins mipi_$i/IIC]
+  }
   # Connect the GPIO interface
   create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 gpio_$i
   connect_bd_intf_net [get_bd_intf_ports gpio_$i] [get_bd_intf_pins mipi_$i/GPIO]
@@ -636,9 +638,9 @@ if {$num_cams == 2} {
     CONFIG.ROUTING_MODE {1} \
     CONFIG.NUM_SI {2} \
     ] $axis_switch
-  connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axis_switch/aclk]
+  connect_bd_net [get_bd_pins clk_wiz_0/clk_out3] [get_bd_pins axis_switch/aclk]
   connect_bd_net [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins axis_switch/s_axi_ctrl_aclk]
-  connect_bd_net [get_bd_pins rst_ps_axi_150M/peripheral_aresetn] [get_bd_pins axis_switch/aresetn]
+  connect_bd_net [get_bd_pins rst_video_250M/peripheral_aresetn] [get_bd_pins axis_switch/aresetn]
   connect_bd_net [get_bd_pins rst_ps_axi_150M/peripheral_aresetn] [get_bd_pins axis_switch/s_axi_ctrl_aresetn]
   connect_bd_intf_net [get_bd_intf_pins mipi_0/M_AXIS_MM2S] [get_bd_intf_pins axis_switch/S00_AXIS]
   connect_bd_intf_net [get_bd_intf_pins mipi_1/M_AXIS_MM2S] [get_bd_intf_pins axis_switch/S01_AXIS]
