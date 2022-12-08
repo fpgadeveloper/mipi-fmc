@@ -43,9 +43,17 @@ proc custom_platform_mods {platform_name} {
 }
 
 proc custom_app_mods {platform_name app_name} {
+  # Is this a PCam target
+  set pcam [expr {[string first "pcam" $platform_name] != -1}]
   # Copy common sources into the application
   copy-r "common/src" "${app_name}/src"
   set proc_instance [get_processor_from_platform $platform_name]
+  # Copy camera driver into the application
+  if {$pcam == 1} {
+    copy-r "pcam/src" "${app_name}/src"
+  } else {
+    copy-r "ias/src" "${app_name}/src"
+  }
   # For Zynq MP designs
   if {$proc_instance == "psu_cortexa53_0"} {
     copy-r "zynqmp/src" "${app_name}/src"

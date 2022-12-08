@@ -12,8 +12,6 @@ uint8_t ov5640_mux_mask;
 XGpio *ov5640_gpio;
 uint8_t ov5640_gpio_mask;
 
-//uint8_t buf[10];
-
 config_word_t const cfg_advanced_awb_[] =
 {
 	// Enable Advanced AWB

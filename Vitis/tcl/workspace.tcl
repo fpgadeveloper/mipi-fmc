@@ -238,7 +238,12 @@ proc get_processor_from_platform {platform_name} {
 # Returns true if xsa_file is newer than the local copy in platform_name
 proc xsa_needs_updating {xsa_file platform_name} {
   # If the .xsa needs updating
-  set xsa_local_copy "$platform_name/hw/${platform_name}.xsa"
+  set xsa_wildcard "$platform_name/hw/*.xsa"
+  set xsa_local_files [glob -nocomplain -- $xsa_wildcard]
+  if { [llength $xsa_local_files] != 1 } {
+    return 1
+  }
+  set xsa_local_copy [lindex $xsa_local_files 0]
   set xsa_source_date [file mtime $xsa_file]
   set xsa_local_copy_date [file mtime $xsa_local_copy]
   if {$xsa_source_date > $xsa_local_copy_date} { return 1 } else { return 0 }
