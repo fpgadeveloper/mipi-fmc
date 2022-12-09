@@ -16,8 +16,18 @@
 #include "xv_gamma_lut.h"
 #include "math.h"
 #include "i2c_axi.h"
-#include "ov5640.h"
 #include "xdpdma_video_example.h"
+#include "board.h"
+
+#if defined (BOARD_PYNQZU_PCAM) || defined (BOARD_KV260_PCAM)
+// PCam designs use OV5640 driver
+#include "ov5640.h"
+#define IIC_MUX_MASK	0x04
+#else
+// IAS designs use AR1335 driver
+#include "ar1335.h"
+#define IIC_MUX_MASK	0x02
+#endif
 
 // Common IP
 XScuGic Intc;
@@ -73,7 +83,7 @@ XV_gamma_lut GammaLut;
 #define VMODE_WIDTH			1280
 #define VMODE_HEIGHT		720
 #define VMODE_VTC           XVTC_VMODE_720P
-#define VMODE_OV5640		MODE_720P_1280_720_60fps
+#define VMODE_CAM			MODE_720P_1280_720_60fps
 #define VMODE_DP			XVIDC_VM_1280x720_60_P
 #define GAMMA               1/1.0
 #define PIXEL_SIZE			8	// In bits
@@ -86,7 +96,7 @@ XV_gamma_lut GammaLut;
 #define VMODE_WIDTH			1920
 #define VMODE_HEIGHT		1080
 #define VMODE_VTC           XVTC_VMODE_1080P
-#define VMODE_OV5640		MODE_1080P_1920_1080_30fps
+#define VMODE_CAM			MODE_1080P_1920_1080_30fps
 #define VMODE_DP			XVIDC_VM_1920x1080_30_P
 #define GAMMA               1/1.0
 #define PIXEL_SIZE			8	// In bits
@@ -272,7 +282,9 @@ int main()
 	/*
 	 * OV5640 camera setup
 	 */
-	ov5640_init(&Iic,IIC_MUX_ADDR,0x04,&Gpio,GPIO_CAM_EN_MASK);
+#if defined (BOARD_PYNQZU_PCAM) || defined (BOARD_KV260_PCAM)
+
+	ov5640_init(&Iic,IIC_MUX_ADDR,IIC_MUX_MASK,&Gpio,GPIO_CAM_EN_MASK);
 	Status = ov5640_detect();
 	if (Status != XST_SUCCESS) {
 		xil_printf("ERROR: Failed to detect OV5640 camera\n\r");
@@ -282,7 +294,21 @@ int main()
 		xil_printf("OV5640 camera detected\n\r");
 	}
 
-	ov5640_config(VMODE_OV5640,AWB_SIMPLE);
+	ov5640_config(VMODE_CAM,AWB_SIMPLE);
+#else
+
+	ar1335_init(&Iic,IIC_MUX_ADDR,IIC_MUX_MASK,&Gpio,GPIO_CAM_EN_MASK);
+	Status = ar1335_detect();
+	if (Status != XST_SUCCESS) {
+		xil_printf("ERROR: Failed to detect AR1335 camera\n\r");
+		return XST_FAILURE;
+	}
+	else {
+		xil_printf("AR1335 camera detected\n\r");
+	}
+
+	ar1335_config(VMODE_CAM);
+#endif
 
 	while(1){
 	}
